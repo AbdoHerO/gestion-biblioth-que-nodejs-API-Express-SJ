@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Liste Books</title>
+    <%- include('../nav.ejs') %>
+</head>
+
+<body>
+
+    <div class="card-body">
+        <% if(data.length) { %>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">User</th>
+                        <th scope="col">User email</th>
+                        <th scope="col">User Role</th>
+                        <th scope="col">User Active</th>
+                        <th scope="col">Book</th>
+                        <th scope="col">Book Image</th>
+                        <th scope="col">Categorie</th>
+                        <th scope="col">Data Prise</th>
+                        <th scope="col">Data Remise</th>
+                        <th width="300px">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(var i=0; i< data.length; i++) { %>
+                        <tr>
+                            <th scope="row">
+                                <%= (i+1) %>
+                            </th>
+                            <td><%= data[i].user%></td>
+                            <td><%= data[i].user_email%></td>
+                            <td><%= data[i].user_role%></td>
+                            <td><%= data[i].user_active%></td>
+                            <td><%= data[i].book%></td>
+                            <td><%= data[i].book_img%></td>
+                            <td><%= data[i].categorie%></td>
+                            <td><%= data[i].dataPrise%></td>
+                            <td><%= data[i].dateRemise%></td>
+                            <td>
+                                <a class="btn btn-success edit" href="../reservers/edit/<%=data[i].id%>">Edit</a>
+                                <a class="btn btn-info info " href="../reservers/details/<%=data[i].id%>">Détails</a>
+                                <a class="btn btn-danger delete" onclick="return confirm('Comfirmer la suppression?')"
+                                    href="../reservers/delete/<%=data[i].id%>">Delete</a>
+                            </td>
+                        </tr>
+                        <% } %>
+                </tbody>
+            </table>
+            <% } %>
+                <!-- si pas de books -->
+                <% if(!data.length) { %>
+                    <p class="text-center">Pas de Réservations !</p>
+                    <% } %>
+    </div>
+
+</body>
+
+</html>

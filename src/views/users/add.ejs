@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <title>Add User</title>
+
+
+    <%- include('../nav.ejs') %>
+
+
+        <% if (message=="Success" ) { %>
+            <div class="alert alert-success" role="alert">Bien ajouté</div>
+            <% } %>
+
+                <% if (message=="Erreur" ) { %>
+                    <div class="alert alert-danger" role="alert">Erreur tout tous les champs sont obligatoires </div>
+                    <% } %>
+                        <div class="card">
+                            <div class="card-header">
+                                Ajouter un User
+                            </div>
+                            <div class="card-body">
+                                <form action="/apis/admin/users/add" method="post" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="full_name"
+                                            value="<%= full_name %>" placeholder="full_name" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" name="email" value="<%= email %>"
+                                            placeholder="email" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" name="password"
+                                            value="<%= password %>" placeholder="password" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="active" id="" class="form-control">
+                                            <option value="<%= active %>" selected>
+                                                <%= active %>
+                                            </option>
+                                            <option value="1">Enable</option>
+                                            <option value="0">Disable</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="role" id="" class="form-control">
+                                            <option value="<%= active %>" selected>
+                                                <%= active %>
+                                            </option>
+                                            <option value="admin">Admin</option>
+                                            <option value="user">User</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="file" class="form-control" name="photo" 
+                                            value="<%= photo %>" placeholder="photo" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-info" value="Valider" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        </body>
+
+</html>

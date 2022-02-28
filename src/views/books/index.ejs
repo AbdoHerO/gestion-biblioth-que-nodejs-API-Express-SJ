@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Liste Books</title>
+    <%- include('../nav.ejs') %>
+</head>
+
+<body>
+
+    <div class="card-body">
+        <% if(data.length) { %>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Categorie</th>
+                        <th scope="col">image</th>
+                        <th width="300px">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(var i=0; i< data.length; i++) { %>
+                        <tr>
+                            <th scope="row">
+                                <%= (i+1) %>
+                            </th>
+                            <td>
+                                <%= data[i].title%>
+                            </td>
+                            <td>
+                                <%= data[i].description%>
+                            </td>
+                            <td>
+                                <%= data[i].categorie%>
+                            </td>
+                            <td>
+                                <%= data[i].image%>
+                            </td>
+                            <td>
+                                <a class="btn btn-success edit" href="../books/edit/<%=data[i].id%>">Modifier</a>
+                                <a class="btn btn-info info " href="../books/details/<%=data[i].id%>">Détails</a>
+                                <a class="btn btn-danger delete" onclick="return confirm('Comfirmer la suppression?')"
+                                    href="../books/delete/<%=data[i].id%>">Supprimer</a>
+                            </td>
+                        </tr>
+                        <% } %>
+                </tbody>
+            </table>
+            <% } %>
+                <!-- si pas de books -->
+                <% if(!data.length) { %>
+                    <p class="text-center">Pas de books !</p>
+                    <% } %>
+    </div>
+
+</body>
+
+</html>

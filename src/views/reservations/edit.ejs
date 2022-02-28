@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <title>Edit Réservation</title>
+
+    <%- include('../nav.ejs') %>
+
+        <div class="card">
+            <div class="card-header">
+                Edit Réservation :  <%= reserver.id %>
+            </div>
+
+
+            <div class="card-body">
+                <form action="/apis/admin/reservers/edit/<%= reserver.id %>" method="post">
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="dataPrise" value="<%= reserver.dataPrise %>" placeholder="dataPrise" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="dateRemise" value="<%= reserver.dateRemise %>" placeholder="dateRemise" autocomplete="off">
+                    </div>
+
+
+                    <div class="form-group">
+                        <select name="id_book" id="id_book"  class="form-control">
+                            <% for(var i = 0; i< books.length; i++) { %>
+                                <%if( books[i].id == reserver.id_book){%>
+                                <option value="<%= books[i].id%>" selected><%= books[i].title%></option>
+                                <% } %>
+                                <option value="<%= books[i].id%>"><%= books[i].title%></option>
+                            <% } %>
+                
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select name="id_user" id="id_user"  class="form-control">
+                            <% for(var i = 0; i< users.length; i++) { %>
+                                <%if( users[i].id == reserver.id_user){%>
+                                <option value="<%= users[i].id%>" selected><%= users[i].full_name%></option>
+                                <% } %>
+                                <option value="<%= users[i].id%>"><%= users[i].full_name%></option>
+                            <% } %>
+                
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-info" value="Valider" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        </body>
+
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <title>Edit categorie</title>
+
+    <%- include('../nav.ejs') %>
+
+        <div class="card">
+            <div class="card-header">
+                Modifier categorie : <%= categorie.full_name %>
+            </div>
+
+
+            <div class="card-body">
+                <form action="/apis/admin/categories/edit/<%= categorie.id %>" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="libelle" value="<%= categorie.libelle %>"
+                            placeholder="libelle" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-info" value="Edit" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        </body>
+
+</html>

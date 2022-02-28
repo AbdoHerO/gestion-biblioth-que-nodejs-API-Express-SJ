@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Liste categories</title>
+    <%- include('../nav.ejs') %>
+        <div class="card-body">
+            <% if(data.length) { %>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Libelle</th>
+                            <th width="300px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i=0; i< data.length; i++) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= (i+1) %>
+                                </th>
+                                <td>
+                                    <%= data[i].libelle%>
+                                </td>
+                                <td>
+                                    <a class="btn btn-success edit"
+                                        href="../categories/edit/<%=data[i].id%>">Edit</a>
+                                    <a class="btn btn-info info " href="../categories/details/<%=data[i].id%>">Details</a>
+                                    <a class="btn btn-danger delete"
+                                        onclick="return confirm('Comfirmer la suppression?')"
+                                        href="../categories/delete/<%=data[i].id%>">Delete</a>
+                                </td>
+                            </tr>
+                            <% } %>
+                    </tbody>
+                </table>
+                <% } %>
+                    <!-- si pas de produits -->
+                    <% if(!data.length) { %>
+                        <p class="text-center">Pas de categories !</p>
+                        <% } %>
+        </div>
+        </div>
+        </body>
+
+</html>

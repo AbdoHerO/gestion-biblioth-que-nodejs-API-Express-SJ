@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Details du User <%= data.full_name%></title>
+<%- include('../nav.ejs') %>
+<h1>Details du User:<%= data.nom%></h1>
+<div class="card-body">
+ 
+ <table class="table">
+ <thead>
+  <tr>
+      <th scope="col">#</th>
+      <th scope="col">Full Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Password</th>
+      <th scope="col">Active</th>
+      <th scope="col">Role</th>
+      <th scope="col">Photo</th>
+  </tr>
+     </thead>
+     <tbody>
+  <tr>
+      <td><%= data.id%></td>
+      <td><%= data.full_name%></td>
+      <td><%= data.email%></td>
+      <td><%= data.password%></td>
+      <td><%= data.active%></td>
+      <td><%= data.role%></td>
+      <td><%= data.photo%></td>
+      
+  </tr>
+    </tbody>
+ </table>
+ 
+   <a class="btn btn-success  edit" href="../users/edit/<%=data.id%>">Edit</a>         
+   <a class="btn btn-info info " href="../users/details/<%=data.id%>">Details</a>         
+   <a class="btn btn-danger delete" onclick="return confirm('Comfirmer la suppression?')" href="../users/delete/<%=data.id%>">Delete</a>         
+ </div>
+</div>
+</body>
+</html>

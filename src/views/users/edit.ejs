@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <title>Edit User</title>
+
+    <%- include('../nav.ejs') %>
+
+        <div class="card">
+            <div class="card-header">
+                Modifier User : <%= user.full_name %>
+            </div>
+
+
+            <div class="card-body">
+                <form action="/apis/admin/users/edit/<%= user.id %>" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="full_name" value="<%= user.full_name %>"
+                            placeholder="full_name" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" name="email" value="<%= user.email %>" placeholder="email"
+                            autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" value="<%= user.password %>"
+                            placeholder="password" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <select name="active" id="" class="form-control">
+                            <option value="<%= user.active %>" selected>
+                                <%= user.active %>
+                            </option>
+                            <option value="1">Enable</option>
+                            <option value="0">Disable</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select name="role" id="" class="form-control">
+                            <option value="<%= user.role %>" selected>
+                                <%= user.role %>
+                            </option>
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="photo" value="<%= user.photo %>" placeholder="photo"
+                            autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-info" value="Edit" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        </body>
+
+</html>

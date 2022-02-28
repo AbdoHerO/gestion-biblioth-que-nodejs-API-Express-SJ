@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Liste Users</title>
+    <%- include('../nav.ejs') %>
+        <div class="card-body">
+            <% if(data.length) { %>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Full Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Password</th>
+                            <th scope="col">Active</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Photo</th>
+                            <th width="300px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i=0; i< data.length; i++) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= (i+1) %>
+                                </th>
+                                <td>
+                                    <%= data[i].full_name%>
+                                </td>
+                                <td>
+                                    <%= data[i].email%>
+                                </td>
+                                <td>
+                                    <%= data[i].password%>
+                                </td>
+                                <td>
+                                    <%= data[i].active%>
+                                </td>
+                                <td>
+                                    <%= data[i].role%>
+                                </td>
+                                <td>
+                                    <img src="../public/<%= data[i].photo%>" alt="" style="width: 50px;height: 50px;">
+                                </td>
+                                <td>
+                                    <a class="btn btn-success edit"
+                                        href="../users/edit/<%=data[i].id%>">Edit</a>
+                                    <a class="btn btn-info info " href="../users/details/<%=data[i].id%>">Details</a>
+                                    <a class="btn btn-danger delete"
+                                        onclick="return confirm('Comfirmer la suppression?')"
+                                        href="../users/delete/<%=data[i].id%>">Delete</a>
+                                </td>
+                            </tr>
+                            <% } %>
+                    </tbody>
+                </table>
+                <% } %>
+                    <!-- si pas de produits -->
+                    <% if(!data.length) { %>
+                        <p class="text-center">Pas de users !</p>
+                        <% } %>
+        </div>
+        </div>
+        </body>
+
+</html>
