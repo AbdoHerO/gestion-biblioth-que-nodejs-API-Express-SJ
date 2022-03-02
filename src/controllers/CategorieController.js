@@ -22,19 +22,16 @@ exports.afficherListe = function (req, res) {
 };
 
 exports.insert = function (req, res) {
-  const new_categorie = new Categorie(req.body);
+  // const new_categorie = new Categorie(req.body);
+  const new_categorie = JSON.parse(req.body.categorieInfo);;
 
-  if (Categorie.verifier(new_categorie)) {
-    res.json({ status: true, message: "categorie not found" });
-  } else {
-    Categorie.insert(new_categorie, function (err, categorie) {
-      if (err) res.send(err);
-      res.json({
-        status: true,
-        message: "La categorie est bien ajouté"
-      });
+  Categorie.insert(new_categorie, function (err, categorie) {
+    if (err) res.send(err);
+    res.json({
+      status: true,
+      message: "La categorie est bien ajouté",
     });
-  }
+  });
 };
 
 exports.details = function (req, res) {
@@ -63,19 +60,13 @@ exports.editForm = function (req, res) {
 };
 
 exports.edit = function (req, res) {
-  const new_categorie = new Categorie(req.body);
-  if (Categorie.verifier(new_categorie)) {
+  // const new_categorie = new Categorie(req.body);
+  const new_categorie = JSON.parse(req.body.categorieInfo);;
+  Categorie.update(req.params.id, new_categorie, function (err, categorie) {
+    if (err) res.send(err);
     res.json({
       status: true,
-      message: "error when update : ID" + new_categorie.id,
+      message: "La categorie est bien modifié",
     });
-  } else {
-    Categorie.update(req.params.id, new_categorie, function (err, categorie) {
-      if (err) res.send(err);
-      res.json({
-        status: true,
-        message: "La categorie est bien modifié",
-      });
-    });
-  }
+  });
 };

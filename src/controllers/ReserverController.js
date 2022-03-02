@@ -5,7 +5,6 @@ const User = require("../models/User");
 /*Afficher le fomulaire d'ajout d'un nouveau Book 
 __dirname :retoune le chemin absolue du projet*/
 exports.addForm = function (req, res) {
-
   const message = req.flash("message");
   var listeUsersData;
   var listeBooksData;
@@ -25,12 +24,11 @@ exports.addForm = function (req, res) {
       res.render(__dirname + "/../../src/views/reservations/add.ejs", {
         books: listeBooksData,
         users: listeUsersData,
-        dataPrise : "",
+        dataPrise: "",
         dateRemise: "",
         message: message,
       });
     });
-    
   });
 };
 
@@ -45,21 +43,16 @@ exports.afficherListe = function (req, res) {
 };
 
 exports.insert = function (req, res) {
-  
-  const new_reservation = new Reserver(req.body);
+  // const new_reservation = new Reserver(req.body);
+  const new_reservation = JSON.parse(req.body.reservationInfo);;
 
-  if (Reserver.verifier(new_reservation)) {
-        res.json({ status: true, message: "reservation not found" });
-  } else {
-
-    Reserver.insert(new_reservation, function (err, Reserver) {
-      if (err) res.send(err);
-          res.json({
-            status: true,
-            message: "La reservation est bien ajouté"
-          });
+  Reserver.insert(new_reservation, function (err, Reserver) {
+    if (err) res.send(err);
+    res.json({
+      status: true,
+      message: "La reservation est bien ajouté",
     });
-  }
+  });
 };
 
 exports.details = function (req, res) {
@@ -94,31 +87,26 @@ exports.editForm = function (req, res) {
         } else {
           listeBooksData = listeBooks;
         }
-  
+
         res.render(__dirname + "/../../src/views/reservations/edit.ejs", {
           reserver: Reserver[0],
           books: listeBooksData,
           users: listeUsersData,
         });
       });
-      
     });
   });
 };
 
 exports.edit = function (req, res) {
-  const new_reservation = new Reserver(req.body);
-  if (Reserver.verifier(new_reservation)) {
-    req.flash("erreur", "Erreur de modification");
-    res.redirect("/edit/" + new_reservation.id);
-    res.json({ status: true, message: "reservation error when update, ID" + new_reservation.id });
-  } else {
-    Reserver.update(req.params.id, new_reservation, function (err, Reserver) {
-      if (err) res.send(err);
-          res.json({
-            status: true,
-            message: "La reservations est bien modifié"
-          });
+  // const new_reservation = new Reserver(req.body);
+  const new_reservation = JSON.parse(req.body.reservationInfo);;
+
+  Reserver.update(req.params.id, new_reservation, function (err, Reserver) {
+    if (err) res.send(err);
+    res.json({
+      status: true,
+      message: "La reservations est bien modifié",
     });
-  }
+  });
 };

@@ -33,14 +33,12 @@ exports.afficherListe = function (req, res) {
 };
 
 exports.insert = function (req, res) {
-  const new_book = new Book(req.body);
+  const new_book = JSON.parse(req.body.bookInfo);
 
-  if (Book.verifier(new_book)) {
-    res.json({ status: true, message: "book not found" });
-  } else {
-    const file = req.files.image;
+  if (req.files != null) {
+    const file = req.files.file;
     const fileName = file.name;
-
+    console.log(new_book);
     let path_uploade = "./public/books_images/";
     file.mv(path_uploade + fileName, (err) => {
       if (!err) {
@@ -49,12 +47,21 @@ exports.insert = function (req, res) {
           if (err_) res.send(err_);
           res.json({
             status: true,
-            message: "Le book est bien ajouté"
+            message: "Le book est bien ajouté",
           });
         });
       } else {
         res.send(err);
       }
+    });
+  } else {
+    new_book.image = "";
+    Book.insert(new_book, function (err_, Book) {
+      if (err_) res.send(err_);
+      res.json({
+        status: true,
+        message: "Le book est bien ajouté",
+      });
     });
   }
 };
@@ -62,9 +69,7 @@ exports.insert = function (req, res) {
 exports.details = function (req, res) {
   Book.findById(req.params.id, function (err, Book) {
     if (err) res.send(err);
-    res.send(
-      JSON.stringify({ status: true, error: null, response: Book[0] })
-    );
+    res.send(JSON.stringify({ status: true, error: null, response: Book[0] }));
   });
 };
 
@@ -97,13 +102,11 @@ exports.editForm = function (req, res) {
 };
 
 exports.edit = function (req, res) {
-  const new_book = new Book(req.body);
-  if (Book.verifier(new_book)) {
-    res.json({ status: true, message: "book error when update, ID" + new_book.id });
-  } else {
-    const file = req.files.image;
+  const new_book = JSON.parse(req.body.bookInfo);
+  // console.log(req.files);
+  if (req.files != null) {
+    const file = req.files.file;
     const fileName = file.name;
-
     let path_uploade = "./public/books_images/";
     file.mv(path_uploade + fileName, (err) => {
       if (!err) {
@@ -112,12 +115,20 @@ exports.edit = function (req, res) {
           if (err_) res.send(err_);
           res.json({
             status: true,
-            message: "Le book est bien modifié"
+            message: "Le book est bien modifié",
           });
         });
       } else {
         res.send(err);
       }
+    });
+  } else {
+    Book.update(req.params.id, new_book, function (err_, Book) {
+      if (err_) res.send(err_);
+      res.json({
+        status: true,
+        message: "Le book est bien modifié",
+      });
     });
   }
 };

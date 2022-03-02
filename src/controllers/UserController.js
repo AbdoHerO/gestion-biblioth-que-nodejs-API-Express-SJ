@@ -27,14 +27,11 @@ exports.afficherListe = function (req, res) {
 };
 
 exports.insert = function (req, res) {
-  const new_user = new User(req.body);
+  const new_user = JSON.parse(req.body.userInfo);
 
-  if (User.verifier(new_user)) {
-    res.json({ status: true, message: "user not found" });
-  } else {
+  if (req.files != null) {
     const file = req.files.photo;
     const fileName = file.name;
-
     let path_uploade = "./public/users_images/";
     file.mv(path_uploade + fileName, (err) => {
       if (!err) {
@@ -43,12 +40,21 @@ exports.insert = function (req, res) {
           if (err_) res.send(err_);
           res.json({
             status: true,
-            message: "Le user est bien ajouté"
+            message: "Le user est bien ajouté",
           });
         });
       } else {
         res.send(err);
       }
+    });
+  } else {
+    new_user.photo = "";
+    User.insert(new_user, function (err_, user) {
+      if (err_) res.send(err_);
+      res.json({
+        status: true,
+        message: "Le user est bien ajouté",
+      });
     });
   }
 };
@@ -57,9 +63,7 @@ exports.insert = function (req, res) {
 exports.details = function (req, res) {
   User.findById(req.params.id, function (err, user) {
     if (err) res.send(err);
-    res.send(
-      JSON.stringify({ status: true, error: null, response: user[0] })
-    );
+    res.send(JSON.stringify({ status: true, error: null, response: user[0] }));
   });
 };
 
@@ -82,10 +86,9 @@ exports.editForm = function (req, res) {
 
 /*Valider la modification d'un user*/
 exports.edit = function (req, res) {
-  const new_user = new User(req.body);
-  if (User.verifier(new_user)) {
-    res.json({ status: true, message: "user error when update, ID" + new_user.id });
-  } else {
+  const new_user = JSON.parse(req.body.userInfo);
+
+  if (req.files != null) {
     const file = req.files.photo;
     const fileName = file.name;
 
@@ -97,12 +100,20 @@ exports.edit = function (req, res) {
           if (err_) res.send(err_);
           res.json({
             status: true,
-            message: "Le user est bien modifié"
+            message: "Le user est bien modifié",
           });
         });
       } else {
         req.flash("erreur", "Erreur file upload");
       }
+    });
+  } else {
+    User.update(req.params.id, new_user, function (err_, user) {
+      if (err_) res.send(err_);
+      res.json({
+        status: true,
+        message: "Le user est bien modifié",
+      });
     });
   }
 };
