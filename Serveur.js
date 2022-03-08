@@ -2,9 +2,10 @@
   const bodyParser = require('body-parser');
   var session = require('express-session');
   const fileupload = require("express-fileupload");
-
+  require("dotenv").config();
+  const cookieParser = require("cookie-parser");
+  const userController =   require('./src/controllers/UserController');
   var flash = require('connect-flash');
-
   /*Pemert d'authoriser la consommation des api à partir d'un autre serveur
   dans ce cas projet React */
   const cors = require('cors');
@@ -13,6 +14,7 @@
 
   app.use(fileupload());
   app.use(cors())
+  app.use(cookieParser());
   app.use(session({ 
       cookie: { maxAge: 60000 },
       store: new session.MemoryStore,
@@ -44,11 +46,16 @@
   // const routerBooksUsers = require('./src/routes/UserBookRoutes')
   // const routerReservationsUsers = require('./src/routes/UserReservationRoutes')
   // const routerStatistiques = require('./src/routes/StatistiqueRoutes')
-
-  app.use('/apis/admin/users/', routerUsers)
+  app.post('/apis/login', userController.login);
+  app.post('/apis/register', userController.register);
+  app.use('/apis/admin/users/' , routerUsers)
   app.use('/apis/admin/books/', routerBooks)
   app.use('/apis/admin/categories/', routerCategories)
   app.use('/apis/admin/reservers/', routerReservers)
+  app.get("/apis/logout", (req, res) => {
+    res.cookie("jwt", "", { maxAge: "1" })
+    res.send('logout')
+  })
   // app.use('/apis/admin/statistiques/', routerStatistiques)
   // app.use('/apis/books/',routerBooksUsers)
   // app.use('/apis/reservations/',routerReservationsUsers)
