@@ -31,7 +31,7 @@ var con = mysql.createConnection({
     if (err) throw err;
     /*pas d'erreur donc on peut exécuter des requête sql */
 
-    var sql = "CREATE TABLE users (id int primary key auto_increment,full_name varchar(25),email varchar(50) ,password varchar(50) ,active BOOLEAN, role varchar(10),photo varchar(50))";
+    var sql = "CREATE TABLE users (id int primary key auto_increment,full_name varchar(25),email varchar(50) ,password varchar(255) ,active BOOLEAN, role varchar(10),photo varchar(50))";
     /*Exécuter la requete sql crée*/
     con.query(sql, function (err, result) {
     if (err) throw err;
