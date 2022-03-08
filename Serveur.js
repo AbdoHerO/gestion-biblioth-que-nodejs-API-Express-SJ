@@ -35,6 +35,8 @@
   app.get('/', (req, res) => {
     res.render(__dirname+'/index.ejs');
   });
+  app.use(express.static('public'))
+
 
   const routerUsers = require('./src/routes/UserRoutes')
   const routerBooks = require('./src/routes/BookRoutes')
