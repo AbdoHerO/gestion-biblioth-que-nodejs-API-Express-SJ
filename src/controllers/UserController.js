@@ -34,68 +34,43 @@ exports.afficherListe = function (req, res) {
 };
 
 exports.insert = function (req, res) {
- 
-  // validation
-  const {error} = registerValidation(req.body)
-  if (error) return res.status(400).send(error.details[0].message)
-  
-  // check if exist
-  var emailExist ; 
-  User.findOne(req.body.email, async function (err, user) {
-    if (err) res.send(err);
+  const new_user = JSON.parse(req.body.userInfo);
 
-    if(user[0]) emailExist = JSON.stringify(user[0].email);
-
-    if(emailExist) return res.status(400).send("email Already Exist")
-    // hash password
-     const salt = await bcrypt.genSalt(10); 
-     const HashPassword = await bcrypt.hash(req.body.password,salt)
-
-    // insert user
-    const new_user = new User({
-       full_name : req.body.full_name,
-       email : req.body.email,
-       password : HashPassword,
-       role : req.body.role,
-       photo : req.body.photo,
-    });
-    if (User.verifier(new_user)) {
-      res.json({ status: true, message: "Fill Fields Please" });
-    } else {
-      const file = req.files.photo;
-      const fileName = file.name;
-  
-      let path_uploade = "./public/users_images/";
-      file.mv(path_uploade + fileName, (err) => {
-        if (!err) {
-          new_user.photo = "users_images/" + fileName;
-          User.insert(new_user, function (err_, user) {
-            if (err_) res.send(err_);
-            res.json({
-              status: true,
-              message: "Le user est bien ajouté"
-            });
+  if (req.files != null) {
+    const file = req.files.photo;
+    const fileName = file.name;
+    let path_uploade = "./public/users_images/";
+    file.mv(path_uploade + fileName, (err) => {
+      if (!err) {
+        new_user.photo = "users_images/" + fileName;
+        User.insert(new_user, function (err_, user) {
+          if (err_) res.send(err_);
+          res.json({
+            status: true,
+            message: "Le user est bien ajouté",
           });
-        } else {
-          res.send(err);
-        }
+        });
+      } else {
+        res.send(err);
+      }
+    });
+  } else {
+    new_user.photo = "";
+    User.insert(new_user, function (err_, user) {
+      if (err_) res.send(err_);
+      res.json({
+        status: true,
+        message: "Le user est bien ajouté",
       });
-    }
-  });
-  
-  
-
-  // insert user
-
+    });
+  }
 };
 
 /*Afficher les détails d'un user*/
 exports.details = function (req, res) {
   User.findById(req.params.id, function (err, user) {
     if (err) res.send(err);
-    res.send(
-      JSON.stringify({ status: true, error: null, response: user[0] })
-    );
+    res.send(JSON.stringify({ status: true, error: null, response: user[0] }));
   });
 };
 
@@ -118,10 +93,9 @@ exports.editForm = function (req, res) {
 
 /*Valider la modification d'un user*/
 exports.edit = function (req, res) {
-  const new_user = new User(req.body);
-  if (User.verifier(new_user)) {
-    res.json({ status: true, message: "user error when update, ID" + new_user.id });
-  } else {
+  const new_user = JSON.parse(req.body.userInfo);
+
+  if (req.files != null) {
     const file = req.files.photo;
     const fileName = file.name;
 
@@ -133,12 +107,20 @@ exports.edit = function (req, res) {
           if (err_) res.send(err_);
           res.json({
             status: true,
-            message: "Le user est bien modifié"
+            message: "Le user est bien modifié",
           });
         });
       } else {
         req.flash("erreur", "Erreur file upload");
       }
+    });
+  } else {
+    User.update(req.params.id, new_user, function (err_, user) {
+      if (err_) res.send(err_);
+      res.json({
+        status: true,
+        message: "Le user est bien modifié",
+      });
     });
   }
 };

@@ -46,7 +46,7 @@ Book.findAll = function (result) {
 };
 
 Book.findById = function (id, result) {
-  dbConn.query("Select * from books where id = ? ", id, function (err, res) {
+  dbConn.query("Select b.* , c.libelle as categorie FROM `books` b INNER join categories c on b.id_categorie = c.id where  b.id = ? ", id, function (err, res) {
     if (err) {
       result(err, null);
     } else {
