@@ -1,7 +1,14 @@
 const User = require("../models/User");
+const{ registerValidation , loginValidation} = require("../validation/UserValidation")
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+
 
 /*Afficher le fomulaire d'ajout d'un nouveau user 
 __dirname :retoune le chemin absolue du projet*/
+
+
 exports.addForm = function (req, res) {
   const message = req.flash("message");
 
@@ -19,42 +26,38 @@ exports.addForm = function (req, res) {
 exports.afficherListe = function (req, res) {
   User.findAll(function (err, listUsers) {
     if (err) {
-      res.send(err);
+      req.flash("error", err);
+      res.render(__dirname + "/../../src/views/users/index.ejs", { data: "" });
     } else {
-      res.send(listUsers);
+      res.render(__dirname + "/../../src/views/users/index.ejs", {
+        data: listUsers,
+      });
     }
   });
 };
 
 exports.insert = function (req, res) {
-  const new_user = JSON.parse(req.body.userInfo);
+  const new_user = new User(req.body);
 
-  if (req.files != null) {
+  if (User.verifier(new_user)) {
+    req.flash("message", true);
+    res.redirect("/apis/admin/users/");
+  } else {
     const file = req.files.photo;
     const fileName = file.name;
+
     let path_uploade = "./public/users_images/";
     file.mv(path_uploade + fileName, (err) => {
       if (!err) {
-        new_user.photo = req.protocol + '://' + req.get('host')+"users_images/" + fileName;
-        User.insert(new_user, function (err_, user) {
-          if (err_) res.send(err_);
-          res.json({
-            status: true,
-            message: "Le user est bien ajouté",
-          });
+        new_user.photo = "users_images/" + fileName;
+        User.insert(new_user, function (err, user) {
+          if (err) res.send(err);
+          req.flash("message", false);
+          res.redirect("/apis/admin/users/");
         });
       } else {
-        res.send(err);
+        req.flash("erreur", "Erreur file upload");
       }
-    });
-  } else {
-    new_user.photo = "";
-    User.insert(new_user, function (err_, user) {
-      if (err_) res.send(err_);
-      res.json({
-        status: true,
-        message: "Le user est bien ajouté",
-      });
     });
   }
 };
@@ -62,16 +65,22 @@ exports.insert = function (req, res) {
 /*Afficher les détails d'un user*/
 exports.details = function (req, res) {
   User.findById(req.params.id, function (err, user) {
-    if (err) res.send(err);
-    res.send(JSON.stringify({ status: true, error: null, response: user[0] }));
+    res.render(__dirname + "/../../src/views/users/details.ejs", {
+      data: user[0],
+    });
   });
 };
 
 /*Supprimer un user par sont id*/
 exports.destroy = function (req, res) {
   User.delete(req.params.id, function (err, user) {
-    if (err) res.send(err);
-    res.json({ status: true, message: "Le user est bien supprime" });
+    if (err) {
+      req.flash("error", err);
+      res.redirect("/apis/admin/users/");
+    } else {
+      req.flash("success", "User est supprimé ");
+      res.redirect("/apis/admin/users/");
+    }
   });
 };
 
@@ -86,37 +95,37 @@ exports.editForm = function (req, res) {
 
 /*Valider la modification d'un user*/
 exports.edit = function (req, res) {
-  const new_user = JSON.parse(req.body.userInfo);
-
-  if (req.files != null) {
+  const new_user = new User(req.body);
+  if (User.verifier(new_user)) {
+    req.flash("erreur", "Erreur de modification");
+    res.redirect("/edit/" + new_user.id);
+  } else {
     const file = req.files.photo;
     const fileName = file.name;
 
     let path_uploade = "./public/users_images/";
     file.mv(path_uploade + fileName, (err) => {
       if (!err) {
-        new_user.photo = req.protocol + '://' + req.get('host')+"users_images/" + fileName;
-        User.update(req.params.id, new_user, function (err_, user) {
-          if (err_) res.send(err_);
-          res.json({
-            status: true,
-            message: "Le user est bien modifié",
-          });
+        new_user.photo = "users_images/" + fileName;
+        User.update(req.params.id, new_user, function (err, user) {
+          if (err) {
+            req.flash("erreur", "Erreur de modification");
+            res.redirect("/apis/admin/users/edit/" + new_user.id);
+          } else {
+            req.flash(
+              "success",
+              new_user.full_name + "Le user est bien modifier"
+            );
+            res.redirect("/apis/admin/users/");
+          }
         });
       } else {
         req.flash("erreur", "Erreur file upload");
       }
     });
-  } else {
-    User.update(req.params.id, new_user, function (err_, user) {
-      if (err_) res.send(err_);
-      res.json({
-        status: true,
-        message: "Le user est bien modifié",
-      });
-    });
   }
 };
+
 
 exports.login =  (req, res) =>{
   const {error} = loginValidation(req.body)
